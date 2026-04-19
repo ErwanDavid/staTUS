@@ -60,7 +60,10 @@ if (__name__ == "__main__"):
         a['system_uptime'] = int(datetime.datetime.now().timestamp() - psutil.boot_time())
         a['available_memory_mb'] = round_megabyte(psutil.virtual_memory().available)
         a['total_memory_mb'] = round_megabyte(psutil.virtual_memory().total)
-        a['cached_memory_mb'] = round_megabyte(psutil.virtual_memory().cached)
+        try:
+            a['cached_memory_mb'] = round_megabyte(psutil.virtual_memory().cached)
+        except AttributeError:
+            a['cached_memory_mb'] = 0
         a['used_memory_mb'] = a['total_memory_mb'] - a['available_memory_mb']    
         a['memory_usage_percentage'] = f"{(a['used_memory_mb'] / a['total_memory_mb']) * 100:.1f}"
         a['cpu_usage_percentage'] = f"{psutil.cpu_percent(interval=1):.1f}"
