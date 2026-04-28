@@ -7,7 +7,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import dcc, html
 
-
+log.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=log.INFO)
 
 CATEGORY_STYLES = {
 	"ram": {
@@ -61,7 +61,7 @@ def load_tsv(tsv_path: Path) -> tuple[pd.DataFrame, str, list[str]]:
 	if not numeric_cols:
 		raise ValueError("No numeric columns found after the date column.")
 
-	print(f"Loaded {len(df)} rows and {len(numeric_cols)} numeric columns from {tsv_path.name}")
+	log.info(f"Loaded {len(df)} rows and {len(numeric_cols)} numeric columns from {tsv_path.name}")
 	return df, time_col, numeric_cols
 
 
@@ -245,6 +245,7 @@ def main() -> None:
 	args = parse_args()
 	tsv_path = Path(args.file)
 	app = create_app(tsv_path)
+	log.info(f"Starting dashboard server at http://{args.host}:{args.port} with data from {tsv_path}")
 	app.run(host=args.host, port=args.port, debug=False)
 
 
