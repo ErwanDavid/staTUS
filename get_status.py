@@ -45,10 +45,6 @@ def write_csv_line(a, filename, columns):
 
 
 def main() -> None:
-    args = parse_args()
-    sleep_time = args.sleep
-    log_file = args.logfile
-
     config = load_config()
     sleep_time = config['logging']['sleep_time']
     log_file = config['logging']['logfile']
@@ -86,5 +82,5 @@ def main() -> None:
         previous_network_sent = a['network_io_sent']
         previous_network_recv = a['network_io_recv']
         write_csv_line(a, log_file, columns)
-    main()
+        time.sleep(sleep_time)
 
