@@ -85,6 +85,6 @@ def main() -> None:
         a['delta_network_recv'] = round((a['network_io_recv'] - previous_network_recv) / sleep_time * 1024, 1)
         previous_network_sent = a['network_io_sent']
         previous_network_recv = a['network_io_recv']
-        write_csv_line(a, log_file, columns
+        write_csv_line(a, log_file, columns)
     main()
 
