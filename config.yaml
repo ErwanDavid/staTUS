@@ -1,0 +1,33 @@
+# System Status Logger Configuration
+logging:
+  # Sleep time between log entries (in seconds)
+  sleep_time: 30
+  
+  # Output log file name
+  logfile: status_log.tsv
+  
+  # Column headers for the TSV file
+  columns:
+    - Timestamp
+    - System Uptime (s)
+    - Avab Mem MB
+    - Total Mem MB
+    - Cached Mem MB
+    - Used Mem MB
+    - Mem Usage %
+    - CPU Usage %
+    - Single CPU Max %
+    - Free Disk Space GB
+    - Disk Read MB
+    - Disk Write MB
+    - Delta Read MB/s
+    - Delta Write kB/s
+    - Network Sent MB
+    - Network Recv MB
+    - Delta Network Sent kB/s
+    - Delta Network Recv kB/s
+
+dashboard:
+  # Dashboard server settings
+  host: 127.0.0.1
+  port: 8050

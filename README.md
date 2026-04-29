@@ -16,6 +16,8 @@ Todo:
 From a cloned repository:
 
 ```bash
+python -m venv ~/venv
+source ~/venv/bin/activate  # On Windows use `venv\Scripts\activate`
 python -m pip install .
 ```
 You can then run the logger and dashboard from the command line:

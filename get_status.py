@@ -1,17 +1,17 @@
 import datetime
 import time
-import argparse
 import os
+from pathlib import Path
 
 import psutil
+import yaml
 
 sep = '\t'
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description='System Status Logger')
-    parser.add_argument('--sleep', '-s', type=int, default=30, help='Sleep time between logs in seconds')
-    parser.add_argument('--logfile', '-l', type=str, default='status_log.tsv', help='Log file name')
-    return parser.parse_args()
+def load_config(config_path: str = 'config.yaml') -> dict:
+    """Load configuration from YAML file."""
+    with open(config_path, 'r') as f:
+        return yaml.safe_load(f)
 
 def round_megabyte(bytes_value):
     return int(round(bytes_value / (1024 * 1024), 0))
@@ -27,14 +27,10 @@ def bigger_disk_free_space():
             continue
     return max(free_spaces) if free_spaces else 0
 
-def write_csv_line(a, filename):
+def write_csv_line(a, filename, columns):
     if not os.path.exists(filename):
         with open(filename, 'w') as f:
-            header = f"Timestamp{sep}System Uptime (s)\
-{sep}Avab Mem MB{sep}Total Mem MB{sep}Cached Mem MB{sep}Used Mem MB{sep}Mem Usage %\
-{sep}CPU Usage %{sep}Single CPU Max %{sep}Free Disk Space GB{sep}Disk Read MB\
-{sep}Disk Write MB{sep}Delta Read MB/s{sep}Delta Write kB/s{sep}Network Sent MB\
-{sep}Network Recv MB{sep}Delta Network Sent kB/s{sep}Delta Network Recv kB/s\n"
+            header = f"{sep.join(columns)}\n"
             f.write(header)
             print(header.strip())
     with open(filename, 'a') as f:
@@ -52,6 +48,11 @@ def main() -> None:
     args = parse_args()
     sleep_time = args.sleep
     log_file = args.logfile
+
+    config = load_config()
+    sleep_time = config['logging']['sleep_time']
+    log_file = config['logging']['logfile']
+    columns = config['logging']['columns']
 
     previous_read = 0
     previous_write = 0
@@ -84,10 +85,6 @@ def main() -> None:
         a['delta_network_recv'] = round((a['network_io_recv'] - previous_network_recv) / sleep_time * 1024, 1)
         previous_network_sent = a['network_io_sent']
         previous_network_recv = a['network_io_recv']
-        write_csv_line(a, log_file)
-        time.sleep(sleep_time)
-
-
-if __name__ == "__main__":
+        write_csv_line(a, log_file, columns
     main()
 

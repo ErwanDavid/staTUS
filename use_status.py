@@ -6,8 +6,14 @@ import dash
 import pandas as pd
 import plotly.graph_objects as go
 from dash import dcc, html
+import yaml
 
 log.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=log.INFO)
+
+def load_config(config_path: str = 'config.yaml') -> dict:
+	"""Load configuration from YAML file."""
+	with open(config_path, 'r') as f:
+		return yaml.safe_load(f)
 
 CATEGORY_STYLES = {
 	"ram": {
@@ -224,19 +230,7 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument(
 		"--file",
 		"-f",
-		default="status_log.tsv",
-		help="Path to TSV file (default: status_log.tsv)",
-	)
-	parser.add_argument(
-		"--host",
-		default="127.0.0.1",
-		help="Host to bind Dash server (default: 127.0.0.1)",
-	)
-	parser.add_argument(
-		"--port",
-		type=int,
-		default=8050,
-		help="Port to bind Dash server (default: 8050)",
+		help="Path to TSV file (overrides config.yaml)",
 	)
 	return parser.parse_args()
 
@@ -250,4 +244,14 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-	main()
+	main()config = load_config()
+	args = parse_args()
+	
+	# Use command-line argument if provided, otherwise use config
+	tsv_path = Path(args.file) if args.file else Path(config['logging']['logfile'])
+	host = config['dashboard']['host']
+	port = config['dashboard']['port']
+	
+	app = create_app(tsv_path)
+	log.info(f"Starting dashboard server at http://{host}:{port} with data from {tsv_path}")
+	app.run(host=host, port=
