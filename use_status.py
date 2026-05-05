@@ -244,7 +244,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-	main()config = load_config()
+	config = load_config()
 	args = parse_args()
 	
 	# Use command-line argument if provided, otherwise use config

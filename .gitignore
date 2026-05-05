@@ -1,2 +1,4 @@
 *.tsv
 nohup.out
+status_monitor.egg-info/
+build/
